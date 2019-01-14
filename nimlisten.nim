@@ -1,4 +1,4 @@
-import test
+import testi
 
 init(20)
 
