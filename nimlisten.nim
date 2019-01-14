@@ -1,15 +1,7 @@
 import ui 
 
+proc onkey(key: cstring; code: cint; down: cint,propagate: ptr cint) {.cdecl.} = 
+    echo "Got key: " & $key & " keycode: " & $code
+
+ui_setup(onkey);
 ui_loop()
-
-#[
-proc cback(str: cstring) {.cdecl.} = 
-    echo "cback"
-    echo str
-
-init(20)
-
-recv(cback)
-
-echo "hello"
-]#
