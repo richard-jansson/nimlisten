@@ -332,7 +332,7 @@ int ws_send(SOCKET sock,char *msg,int len){
 	return 0;
 }
 
-void ws_recv(char *msg,int len){
+void ws_recv(char *msg,int len,void (*cback)(char *msg)){
 	int is_fin=(msg[0]&(1<<8))?1:0;
 	int pl_len=msg[1]&0b01111111;
 	int pl_mskd=(msg[1]&0b10000000)?1:0;
@@ -377,5 +377,7 @@ void ws_recv(char *msg,int len){
 	}
 	msg[6+pl_len]=0;
 	printf("received msg: %s\n",msg+6);
+    //TODO is this 0 terminated??
+    cback(msg+6);
 //	vip_get_cmd(msg+6,pl_len);
 }

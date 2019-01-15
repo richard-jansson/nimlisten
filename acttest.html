@@ -1,0 +1,38 @@
+<!-- 
+Quick and dirty test for broadcast functionallity 
+-->
+<html>
+    <script type="text/javascript">
+        var ws;
+        function write(msg){
+            var out=document.getElementById("output");
+            out.innerHTML+=msg;
+        }
+
+        function send(){
+            ws=new WebSocket("ws://localhost:10000/");
+            var cmd=document.getElementById("cmd").value;
+
+            ws.onopen=function(){
+                var msg={cmd: cmd}
+
+                console.log("sending");
+                console.log(cmd);
+
+                write("</br>Send: ");
+                write(JSON.stringify(msg));
+
+                ws.send(JSON.stringify(msg));
+
+                ws.close();
+
+                setTimeout(function(){ ws.close() }, 1000);
+            }
+        }
+    </script>
+    <body>
+        <label for="cmd">CMD:</label> <input type="text" id="cmd"> </br> 
+        <input type="submit" value="send" onclick="send()" />
+        <div id="output"></div>
+    </body>
+</html>

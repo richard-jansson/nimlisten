@@ -1,5 +1,12 @@
 import ui,merc,json 
 
+# Do we need a thread safe option for this one?
+proc onmsg(msg: cstring) {.cdecl,gcsafe.} = 
+    echo "NIM: Got message"
+    echo $msg
+
+actors_setup(10000,onmsg)
+
 proc onkey(key: cstring; code: cint; down: cint,propagate: ptr cint) {.cdecl.} = 
     echo "Got key: " & $key & " keycode: " & $code
     
@@ -9,6 +16,7 @@ proc onkey(key: cstring; code: cint; down: cint,propagate: ptr cint) {.cdecl.} =
     let resp = %* {"type": dir, "code": $code, "key": $key}
 
     audience_bcast($resp) 
+
 
 echo "start audience"
 audience_setup(9000) 

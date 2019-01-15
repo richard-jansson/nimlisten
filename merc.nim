@@ -3,6 +3,10 @@
 {.passC: "-I/home/richard/proj/nimlisten -mwindows -DVERBOSE".}
 {.passL: "-lws2_32 -lcrypt32".}
 
+type MSGCBACK* = proc (msg: cstring) {.cdecl.}
+
 proc audience_setup*(port: cint) {.cdecl, importc:"audience_setup".}
 proc audience_bcast*(msg: cstring) {.cdecl, importc:"audience_bcast".}
-## void actors_setup(int port,void (*onmsg)(char *msg,int m_len,char **resp,int r_len));
+
+#proc actors_setup(port: cint;onmsg: MSGCBACK) {.cdecl, importc:"actors_setup".}
+proc actors_setup*(port: cint; onmsg: MSGCBACK) {.cdecl, importc:"actors_setup".}
