@@ -10,6 +10,7 @@
 
 HANDLE cli_lock;
 HANDLE lock;
+HANDLE *audience;
 
 typedef struct __ll_sock_t {
 	SOCKET sock;	
@@ -18,7 +19,10 @@ typedef struct __ll_sock_t {
 
 llsock_t *clients=NULL;
 
-int audience_setup(int port){
+DWORD WINAPI __audience_setup(LPVOID p){
+    int port= *((int*)p);
+    printf("attached to port %i\n",p);
+
 	cli_lock=CreateMutex(NULL,FALSE,NULL);
 	if(cli_lock==NULL){
 		printf("create mutex error\n");
@@ -91,6 +95,7 @@ int audience_setup(int port){
 		r_len=recv(cli,buf,4096,0);
 
 		resp=parse_request(buf,r_len);
+        printf("sending %s\n",resp);
 		if(resp->resp!=NULL)  send(cli,resp->resp,resp->len,0);
 		else continue;
 
@@ -114,7 +119,17 @@ int audience_setup(int port){
 
 	return 0;
 }
-void audience_broadcast(char *buf,int len){
+
+int audience_setup(int port){
+    audience=CreateThread(NULL,0,__audience_setup,(LPVOID)&port,0,NULL);
+    if(audience==NULL){
+        printf("failed to create audience thread\n");
+        return 1;
+    }
+    return 0;
+}
+
+void audience_bcast(char *buf){
 	llsock_t *curr=clients;	
 //	char *buf="hello world\r\n";
 	int i=0,ret;
@@ -132,8 +147,7 @@ void audience_broadcast(char *buf,int len){
 		}
 		*/
 
-//		ws_send(curr->sock,buf,strlen(buf));
-
+		ws_send(curr->sock,buf,strlen(buf));
 		curr=curr->next;
 	}
 

@@ -1,0 +1,29 @@
+<!-- 
+Quick and dirty test for broadcast functionallity 
+-->
+<html>
+    <script type="text/javascript">
+        ws=new WebSocket("ws://localhost:9000/")
+        ws.onopen=function(){
+            document.write("open");
+            console.log("open");
+        }
+        ws.onmessage=function(m){
+            var d=m.data;
+
+            document.write("<br>");
+            document.write(d);
+            console.log(JSON.parse(d));
+        }
+
+        setInterval(function(){
+            console.log("quitting");
+            document.write("<br>");
+            document.write("time out exiting");
+
+            ws.close();
+        },5000)
+    </script>
+    <body>
+    </body>
+</html>
