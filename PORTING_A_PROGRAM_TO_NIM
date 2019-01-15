@@ -1,0 +1,25 @@
+# Introduction 
+Portable 
+resource efficient 
+code already written in C + javascript 
+
+want to share online demo graphics code with os code 
+
+multiplatform 
+
+# Day one 
+Try to figure out how to make a simple interface to a single file. 
+
+c2nim 
+nimgen -> might be nifty 
+
+use --cdecl 
+
+watched video: 
+https://www.youtube.com/watch?v=4rJEBs_Nnaw
+- nice syntactic sugar#
+
+deefer is really nice
+
+templates DSL -> might turn out to be useful
+Macro 
