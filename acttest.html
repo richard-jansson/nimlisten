@@ -12,9 +12,10 @@ Quick and dirty test for broadcast functionallity
         function send(){
             ws=new WebSocket("ws://localhost:10000/");
             var cmd=document.getElementById("cmd").value;
+            var code=document.getElementById("code").value;
 
             ws.onopen=function(){
-                var msg={cmd: cmd}
+                var msg={cmd: cmd,code: parseInt(code)}
 
                 console.log("sending");
                 console.log(cmd);
@@ -32,6 +33,7 @@ Quick and dirty test for broadcast functionallity
     </script>
     <body>
         <label for="cmd">CMD:</label> <input type="text" id="cmd"> </br> 
+        <label for="code">Code:</label> <input type="text" id="code"> </br> 
         <input type="submit" value="send" onclick="send()" />
         <div id="output"></div>
     </body>

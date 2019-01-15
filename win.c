@@ -7,6 +7,7 @@ int running=0;
 
 void (*ui_onkey)(char *key,int code,int down);
 
+
 LRESULT CALLBACK _keyboard_hook(int n,WPARAM w,LPARAM l){
 	PKBDLLHOOKSTRUCT p=(PKBDLLHOOKSTRUCT)l;
 	int propagate=1;
@@ -25,6 +26,19 @@ LRESULT CALLBACK _keyboard_hook(int n,WPARAM w,LPARAM l){
 	if(w==WM_KEYUP) ui_onkey((char*)key,(int)p->vkCode,1);
 
 	return propagate?CallNextHookEx(NULL,n,w,l):1;
+}
+
+// FIXME lock the khook
+void ui_sendkeycode(int key){
+	UnhookWindowsHookEx(khook);
+	
+	keybd_event(key,0,0,0);
+	keybd_event(key,0,KEYEVENTF_KEYUP,0);
+
+	khook=SetWindowsHookEx(WH_KEYBOARD_LL,_keyboard_hook,0,0);
+	if(khook==NULL){
+		printf("error setting hook\n");
+	}
 }
 
 void ui_setup(void (*cback)(char *key,int code, int down,int *prop)){

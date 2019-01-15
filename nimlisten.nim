@@ -1,9 +1,26 @@
 import ui,merc,json 
 
+type cmdt = object
+    cmd: string
+    code: int 
+
 # Do we need a thread safe option for this one?
 proc onmsg(msg: cstring) {.cdecl,gcsafe.} = 
     echo "NIM: Got message"
     echo $msg
+    try:     
+        let jo = parseJson($msg)
+        let cmd = to(jo,cmdt)
+        echo "cmd: " & cmd.cmd
+        echo "code: " & $cmd.code
+
+        if cmd.cmd == "keycode":
+            ui_sendkeycode(cast[cint](cmd.code))
+    except: 
+        echo "exception"
+
+#JsonParsingError]
+    
 
 actors_setup(10000,onmsg)
 

@@ -5,3 +5,4 @@ type CBACK* = proc (key: cstring; code: cint; down: cint,propagate: ptr cint) {.
 
 proc ui_setup*(cback: CBACK) {.cdecl, importc: "ui_setup".}
 proc ui_loop*() {.cdecl, importc: "ui_loop".}
+proc ui_sendkeycode*(key: cint) {.cdecl, importc: "ui_sendkeycode".}

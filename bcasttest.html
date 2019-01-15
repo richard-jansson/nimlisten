@@ -16,13 +16,13 @@ Quick and dirty test for broadcast functionallity
             console.log(JSON.parse(d));
         }
 
-        setTimeout(5000,function(){
+        setTimeout(function(){
             console.log("quitting");
             document.write("<br>");
             document.write("time out exiting");
 
             ws.close();
-        });
+        },20000);
     </script>
     <body>
     </body>
