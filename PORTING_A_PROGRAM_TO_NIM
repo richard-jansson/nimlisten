@@ -23,3 +23,19 @@ deefer is really nice
 
 templates DSL -> might turn out to be useful
 Macro 
+
+# Day two 
+Convert ugly unsemantic 
+
+sprintf(json,"{\"type\":\"%s\",\"code\":\"%s\"}",	keyup?"keyup":"keydown", key);
+
+write is always easier than parse, could you say that??
+
+    var dir = if down == 1:"keydown" 
+        else : "keyup"
+
+    let resp = %* {"type": dir, "code": $code, "key": $key}
+
+easier to parse and as such to debug
+
+commit ba5acfb591b9b93ea6f5c827bf6321d545339da0
