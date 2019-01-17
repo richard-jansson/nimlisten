@@ -1,4 +1,9 @@
-import ui,merc,json 
+import ui,merc,json
+import stream
+
+var sport: int 
+
+stream_setup(11000)
 
 type cmdt = object
     cmd: string
