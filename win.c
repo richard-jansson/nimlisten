@@ -28,7 +28,26 @@ LRESULT CALLBACK _keyboard_hook(int n,WPARAM w,LPARAM l){
 	return propagate?CallNextHookEx(NULL,n,w,l):1;
 }
 
-// FIXME lock the khook
+void ui_sendkeycodedown(int key){
+	UnhookWindowsHookEx(khook);
+	
+	keybd_event(key,0,0,0);
+
+	khook=SetWindowsHookEx(WH_KEYBOARD_LL,_keyboard_hook,0,0);
+	if(khook==NULL){
+		printf("error setting hook\n");
+	}
+}
+void ui_sendkeycodeup(int key){
+	UnhookWindowsHookEx(khook);
+	
+	keybd_event(key,0,KEYEVENTF_KEYUP,0);
+
+	khook=SetWindowsHookEx(WH_KEYBOARD_LL,_keyboard_hook,0,0);
+	if(khook==NULL){
+		printf("error setting hook\n");
+	}
+}
 void ui_sendkeycode(int key){
 	UnhookWindowsHookEx(khook);
 	
