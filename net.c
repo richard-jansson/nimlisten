@@ -248,6 +248,7 @@ void actors_setup(int port,void (*cback)(char *msg)){
         printf("failed to create audience thread\n");
         return 1;
     }
+    printf("thread listening for new actors up and running");
     return 0;
 }
 int audience_setup(int port){
