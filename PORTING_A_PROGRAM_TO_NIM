@@ -46,3 +46,6 @@ Allnighter tried to get some libjpeg
 messy messy 
 
 https://nim-lang.org/docs/c2nim.html#preprocessor-support-def-directive
+
+# Day four 
+a++ => overflow 
