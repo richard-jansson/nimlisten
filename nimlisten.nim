@@ -16,12 +16,15 @@ proc onmsg(msg: cstring) {.cdecl,gcsafe.} =
 
         if cmd.cmd == "keycode":
             ui_sendkeycode(cast[cint](cmd.code))
+        elif cmd.cmd == "kcdwn": 
+            ui_sendkeycodedown(cast[cint](cmd.code))
+        elif cmd.cmd == "kcdup": 
+            ui_sendkeycodeup(cast[cint](cmd.code))
     except: 
         echo "exception"
 
 #JsonParsingError]
     
-
 actors_setup(10000,onmsg)
 
 proc onkey(key: cstring; code: cint; down: cint,propagate: ptr cint) {.cdecl.} = 
