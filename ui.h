@@ -3,3 +3,4 @@ void ui_loop();
 void ui_sendkeycode(int key);
 void ui_sendkeycodedown(int key);
 void ui_sendkeycodeup(int key);
+void ui_grabscreen(unsigned char *buf,int *width,int *height);

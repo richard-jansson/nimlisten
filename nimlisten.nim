@@ -3,7 +3,6 @@ import stream
 
 var sport: int 
 
-stream_setup(11000)
 
 type cmdt = object
     cmd: string
@@ -28,9 +27,10 @@ proc onmsg(msg: cstring) {.cdecl,gcsafe.} =
     except: 
         echo "exception"
 
+
 #JsonParsingError]
     
-actors_setup(10000,onmsg)
+#actors_setup(10000,onmsg)
 
 proc onkey(key: cstring; code: cint; down: cint,propagate: ptr cint) {.cdecl.} = 
     echo "Got key: " & $key & " keycode: " & $code
@@ -42,10 +42,12 @@ proc onkey(key: cstring; code: cint; down: cint,propagate: ptr cint) {.cdecl.} =
 
     audience_bcast($resp) 
 
-
-echo "start audience"
-audience_setup(9000) 
-
 echo "start ui"
 ui_setup(onkey);
+
+stream_setup(11000)
+
+#echo "start audience"
+#audience_setup(9000) 
+
 ui_loop()

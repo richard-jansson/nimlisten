@@ -38,9 +38,31 @@ void http_free_get(char *get){
 //    free(get);
 }
 
-void send_stream_header(){
-//   char **headers[]={"Content-Type:  
+void send_stream_header(SOCKET *con){
+    char *endl="\r\n";
+   char *headers[]=
+    { "Content-Type: multipart/x-mixed-replace;boundary=MJPEGBOUNDARY",
+    "Connection: close",
+    "Pragma: no-cache",
+    ""
+    }; 
+    int len=0;
+    for(int i=0;i<sizeof(headers)/sizeof(char*);i++) len+=strlen(headers[i])+2;
 
+    printf("total header length: %i\n",len);
+
+    char *msg=malloc(len+1);
+    // assert
+    *msg=0;
+    
+    for(int i=0;i<sizeof(headers)/sizeof(char*);i++) {
+        strcat(msg,headers[i]); 
+        strcat(msg,endl);
+        printf("%s%s",headers[i],endl);
+    }
+
+    send(con,msg,len,0);
+    // check ret above
 }
 
 char *http_parse_get(char *imsg,int len){
@@ -144,6 +166,7 @@ DWORD WINAPI __http_con_thread(LPVOID p){
   char *get=con->get;
     
     printf("GET: %s\n",get);
+    send_stream_header(cli);
     cback(get);
     http_free_get(get);
     closesocket(cli);
