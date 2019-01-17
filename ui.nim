@@ -1,5 +1,6 @@
 {.compile: "/home/richard/proj/nimlisten/win.c".}
 {.passC: "-I/home/richard/proj/nimlisten -mwindows".}
+{.passL: "-lgdi32".}
 
 type CBACK* = proc (key: cstring; code: cint; down: cint,propagate: ptr cint) {.cdecl.}
 

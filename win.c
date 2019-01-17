@@ -75,6 +75,52 @@ void ui_setup(void (*cback)(char *key,int code, int down,int *prop)){
 void ui_loop(){
 	MSG msg;
 	printf("starting win loop\n");
+    
+    HDC screen,dst;
+    screen=GetDC(NULL);
+    dst=CreateCompatibleDC(screen);
+    if(!dst){
+        printf("Failed to create compatible DC\n");
+        return;
+    }
+
+    BITMAPINFO bmi;
+    HBITMAP hbmp;
+    BITMAP bmp;
+    void *buffer;
+
+    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biWidth = 512;
+    bmi.bmiHeader.biHeight = 512;
+    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biBitCount = 24;
+    // what options do we have here??
+    bmi.bmiHeader.biCompression = BI_RGB;
+    bmi.bmiHeader.biSizeImage = 0;
+    bmi.bmiHeader.biXPelsPerMeter = 0;
+    bmi.bmiHeader.biYPelsPerMeter = 0;
+    bmi.bmiHeader.biClrUsed = 0;
+    bmi.bmiHeader.biClrImportant = 0;
+
+    hbmp = CreateDIBSection(dst,&bmi,DIB_RGB_COLORS,&buffer,NULL,0);
+    if(!hbmp){
+        printf("Failed to create DIB section\n");
+    }
+    
+    if(!SelectObject(dst,hbmp)){
+        printf("!Select Object!!\n");
+    }
+
+    GetObject(hbmp,sizeof(BITMAP),&bmp);
+    // init done 
+
+    BitBlt(dst,0,0,512,512,screen,0,0,SRCCOPY|CAPTUREBLT);
+    
+    FILE *fd=fopen("grab.ppm","w");
+    
+    fprintf(fd,"P6\n%i %i 255 \n",512,512);
+    fwrite(buffer,1,512*512*3,fd);
+    fclose(fd);
 
 	while(GetMessage(&msg,NULL,0,0) > 0 && running){
 		TranslateMessage(&msg);
