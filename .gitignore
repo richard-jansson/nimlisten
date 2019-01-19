@@ -4,3 +4,10 @@ nimlisten.exe
 trash
 .*o
 .*so
+nimjpeg
+*avi
+*jpg
+*jpeg
+*ppm
+ppm
+*dll
