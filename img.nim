@@ -4,6 +4,8 @@ import min, system
 const 
     Q = 90
 
+var ppmn = 1
+
 proc compress*(pixbuf: seq[cuchar], w: int,h: int) = 
     var cinfo: jpeg_compress_struct
     var jerr: jpeg_error_mgr
@@ -71,6 +73,7 @@ proc compress*(pixbuf: seq[cuchar], w: int,h: int) =
     echo "destroy compress"
     jpeg_destroy_compress(cinfo.addr)
 
-    var output=open("nimout.jpg",fmWrite)
+    var output=open("ppm/" & $ppmn & ".jpg",fmWrite)
+    ppmn = ppmn + 1
     var written=output.writeBuffer(mem,mem_size)
     echo "wrote " & $written & " bytes"
