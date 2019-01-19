@@ -49,3 +49,10 @@ https://nim-lang.org/docs/c2nim.html#preprocessor-support-def-directive
 
 # Day four 
 a++ => overflow 
+
+# day five 
+as expected ran into problems with threads solved by using: 
+    system.setupForeignThreadGc()
+and 
+--threads:on --tlsEmulation:off
+parameters to nim 

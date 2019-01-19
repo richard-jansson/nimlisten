@@ -105,12 +105,17 @@ void freesgrab(unsigned char *buf){
     if(buf) free(buf);
 }
 
+void ui_getdim(int *width,int *height){
+    *width=GetSystemMetrics(SM_CXSCREEN);
+    *height=GetSystemMetrics(SM_CYSCREEN);
+}
+
 // Possible optimizations
 // Keep track of DCs etcetera 
 // don't copy buffer 
 // done this way to make safe with threads 
-void ui_grabscreen(unsigned char *out,int *width,int *height){ 
-    HDC screen,dst;
+int ui_grabscreen(unsigned char *out){ 
+    HDC screen=NULL,dst=NULL;
 
     printf("GetDc\n");
     screen=GetDC(NULL);
@@ -118,7 +123,7 @@ void ui_grabscreen(unsigned char *out,int *width,int *height){
     dst=CreateCompatibleDC(screen);
     if(!dst){
         printf("Failed to create compatible DC\n");
-        return;
+        return -1;
     }
    
     printf("System metrics...\n");
@@ -148,18 +153,26 @@ void ui_grabscreen(unsigned char *out,int *width,int *height){
     hbmp = CreateDIBSection(dst,&bmi,DIB_RGB_COLORS,&buffer,NULL,0);
     if(!hbmp){
         printf("Failed to create DIB section\n");
+        return -2;
     }
     
     if(!SelectObject(dst,hbmp)){
         printf("!Select Object!!\n");
+        return -3;
     }
 
     printf("GetObject\n");
-    GetObject(hbmp,sizeof(BITMAP),&bmp);
+    if(!GetObject(hbmp,sizeof(BITMAP),&bmp)){
+        printf("GetObject failed\n");
+        return -4;
+    }
     // init done 
 
     printf("bitblt\n");
-    BitBlt(dst,0,0,w,h,screen,0,0,SRCCOPY|CAPTUREBLT);
+    if(!BitBlt(dst,0,0,w,h,screen,0,0,SRCCOPY|CAPTUREBLT)){
+        printf("BitBlt failed\n");
+        return -5;
+    }
 
 //   printf("allocating\n");
 //    *buf=malloc(w*h*3);
@@ -167,15 +180,15 @@ void ui_grabscreen(unsigned char *out,int *width,int *height){
     // assert!!
     printf("copying!\n");
     memcpy(out,buffer,w*h*3);
-    *width=w;
-    *height=h;
 
     printf("cleaning up!\n");
-    ReleaseDC(NULL,screen);
-    DeleteDC(dst);
-    DeleteObject(hbmp);
-    DeleteDC(screen);
+    if(screen) ReleaseDC(NULL,screen);
+    if(dst) DeleteDC(dst);
+    if(hbmp) DeleteObject(hbmp);
+    if(screen) DeleteDC(screen);
     printf("grab is done\n");
+
+    return 0;
 }
 
 void ui_loop(){

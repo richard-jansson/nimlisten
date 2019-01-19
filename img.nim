@@ -30,8 +30,11 @@ proc compress*(pixbuf: seq[cuchar], w: int,h: int) =
 #    cinfo.in_color_space = JCS_RGB;
 #    cinfo.in_color_space = cast[J_COLOR_SPACE](2);
 
+    echo "set_def"
     jpeg_set_defaults(cinfo.addr);
+    echo "set_Q"
     jpeg_set_quality(cinfo.addr,Q,TRUE)
+    echo "set_COL"
     jpeg_set_colorspace(cinfo.addr,JCS_RGB);
 
     echo "start_compress"
@@ -40,13 +43,16 @@ proc compress*(pixbuf: seq[cuchar], w: int,h: int) =
     cinfo.in_color_space = JCS_RGB;
 
     echo "write scanlines"
+    echo "W: " & $w & " H: " & $h
 
+    echo "alloc_row" & $w
     var row=newSeq[cuchar](w*3)
+    echo "alloc rows" 
     var rows=newSeq[ptr cuchar](1)
     rows[0]=cast[ptr cuchar](addr row[0])
 
     while cinfo.next_scanline < cinfo.image_height:
-        var y = cinfo.image_height - cinfo.next_scanline
+        var y = cinfo.image_height - cinfo.next_scanline - 1
         for x in countup(0,w-1):
             var o0= x*3
             var o1 = (w*cast[int](y) + x)*3
