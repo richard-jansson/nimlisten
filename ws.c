@@ -13,6 +13,8 @@
 #include<stdint.h>
 #include<unistd.h>
 #include<errno.h>
+
+#include<wincrypt.h>
 /*#include"debug.h" */
 
 #include"ws.h"
