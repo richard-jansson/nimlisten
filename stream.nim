@@ -23,9 +23,3 @@ proc stream_setup*(port: int) =
     ui_grabscreen(cast[ptr cuchar](img),w.addr,h.addr)
 
     compress(img,1024,768)
-
-# test 
-#    var output=open("nimout.ppm",fmWrite)
-#    var written=output.writeBuffer(cast[ptr cuchar](img),1024*768*3)
-#    echo "wrote " & $written & " bytes"
-#end test

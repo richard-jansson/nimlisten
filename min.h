@@ -515,4 +515,5 @@ void jpeg_mem_dest (j_compress_ptr cinfo,
 			       unsigned long * outsize);
 
 void jpeg_create_compress(j_compress_ptr cinfo);
-JSAMPARRAY alloc_row(int w,int h);
+
+//void jpeg_set_colorspace(j_compress_ptr cinfo,J_COLOR_SPACE colorspace);

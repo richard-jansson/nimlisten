@@ -574,4 +574,4 @@ proc jpeg_mem_dest*(cinfo: j_compress_ptr; outbuffer: ptr ptr cuchar;
 proc jpeg_create_compress*(cinfo: j_compress_ptr) {.cdecl, importc: "jpeg_create_compress".}
 
 
-proc alloc_row*(w: cint,h: cint): JSAMPARRAY {.cdecl, importc: "alloc_row".}
+proc jpeg_set_colorspace*(cinfo: j_compress_ptr, colorspace: J_COLOR_SPACE) {.cdecl, importc:"jpeg_set_colorspace".}
