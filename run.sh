@@ -1,4 +1,7 @@
 #!/bin/bash
+if [ ! -d ppm ];then 
+    mkdir ppm
+fi
 rm -f nimlisten.exe
 #rm -f  /home/richard/.cache/nim/nimlisten_d/*.o
 rm -rf  /home/richard/.cache/nim/*
