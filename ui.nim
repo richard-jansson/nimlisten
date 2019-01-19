@@ -9,4 +9,5 @@ proc ui_loop*() {.cdecl, importc: "ui_loop".}
 proc ui_sendkeycode*(key: cint) {.cdecl, importc: "ui_sendkeycode".}
 proc ui_sendkeycodedown*(key: cint) {.cdecl, importc: "ui_sendkeycodedown".}
 proc ui_sendkeycodeup*(key: cint) {.cdecl, importc: "ui_sendkeycodeup".}
-proc ui_grabscreen*(img: ptr cuchar,w: ptr cint,h:ptr cint) {.cdecl, importc: "ui_grabscreen".}
+proc ui_grabscreen*(img: ptr cuchar): cint {.cdecl, importc: "ui_grabscreen".}
+proc ui_getdim*(w: ptr cint,h: ptr cint) {.cdecl, importc: "ui_getdim".}
