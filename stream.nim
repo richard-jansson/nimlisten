@@ -19,7 +19,10 @@ proc oncon(sock: cint, get: cstring) {.cdecl,gcsafe.} =
     var http_sent: int
     var active = true
 
-    var boundary="--MJPEGBOUNDARY"
+#    var boundary: ptr cchar=cast[pter "--MJPEGBOUNDARY\r\n"
+    
+    var boundary: cstring = "--MJPEGBOUNDARY\r\n"
+#    GC_ref(boundary)
 
     while active:
         echo "sleep..."
@@ -45,21 +48,25 @@ proc oncon(sock: cint, get: cstring) {.cdecl,gcsafe.} =
             let (compi,compilen)=compress(img,w,h)
             echo "[stream] compress done. len: " & $compilen
 
-            # send boundary
-            http_sent=http_send(sock,cast[ptr cchar](boundary.addr),cast[cint](boundary.len-1))
+#            # send boundary
+            echo "trying to send: " & $boundary.len & " bytes"
+            http_sent=http_send(sock,cast[ptr cchar](boundary),cast[cint](boundary.len))
+            echo "Sent " & $http_sent & " bytes"
             if(http_sent < 0 ):
                 active=false
-            
-            # send header for jpeg file
-            var interheader=  "Content-Type: image/jpeg\r\n" & "Content-Length: " & $compilen & "\r\n" & "\r\n"
-            http_sent=http_send(sock,cast[ptr cchar](interheader),cast[cint](interheader.len))
-            if(http_sent < 0 ):
-                active=false
-
-            # send image
-            http_sent=http_send(sock,cast[ptr cchar](compi),cast[cint](compilen))
-            if(http_sent < 0 ):
-                active=false
+#
+#            # send header for jpeg file
+#            var interheader=  "Content-Type: image/jpeg\r\n" & "Content-Length: " & $compilen & "\r\n" & "\r\n"
+#            http_sent=http_send(sock,cast[ptr cchar](interheader),cast[cint](interheader.len))
+#            echo "Sent "&$http_sent&" bytes"
+#            if(http_sent < 0 ):
+#                active=false
+#
+#            # send image
+#            http_sent=http_send(sock,cast[ptr cchar](compi),cast[cint](compilen))
+#            echo "Sent "&$http_sent&" bytes"
+#            if(http_sent < 0 ):
+#                active=false
 
         except IndexError:
             echo "Trouble compressing" 
