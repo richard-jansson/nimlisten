@@ -8,14 +8,20 @@ const
     FPS = 10 
 
 # Called on every new http connection 
-proc oncon(get: cstring) {.cdecl,gcsafe.} =
+proc oncon(sock: cint, get: cstring) {.cdecl,gcsafe.} =
     system.setupForeignThreadGc()
     echo "got http connection: {GET}=" & $get
+    echo "on socket " & $cast[int](sock)
 
     var ret: cint
     var reti: int
+    var jlen: int
+    var http_sent: int
+    var active = true
 
-    while true:
+    var boundary="MJPEGBOUNDARY"
+
+    while active:
         echo "sleep..."
         os.sleep(cast[int](1000/FPS))
         var w,h:cint
@@ -35,12 +41,23 @@ proc oncon(get: cstring) {.cdecl,gcsafe.} =
             continue
 
         try: 
-            compress(img,w,h)
+            let (compi,compilen)=compress(img,w,h)
+            echo "[stream] compress done. len: " & $compilen
+#            echo "[stream]sending " & $cast[int]($boundary.len-1) & " bytes" & " socket " & $cast[int](sock)
+            http_sent=http_send(sock,cast[ptr cchar](boundary.addr),cast[cint](boundary.len-1))
+            if(http_sent < 0 ):
+                active=false
+            echo "sent " & $http_sent & " bytes"
+            echo "[stream]sending " & $compilen & " bytes" & " socket " & $cast[int](sock)
+            http_sent=http_send(sock,cast[ptr cchar](compi),cast[cint](compilen))
+            if(http_sent < 0 ):
+                active=false
+            echo "sent " & $http_sent & " bytes"
         except IndexError:
-            echo "Trouble compressing"
-
-        echo "compress done"
-    
+            echo "Trouble compressing" 
+            continue
+       
+    echo "Connection closed"
 # remember to tearDown when client exits
     system.tearDownForeignThreadGc()
 
