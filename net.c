@@ -9,6 +9,7 @@
 #pragma comment (lib, "Ws2_32.lib")
 
 void (*onmsg)(char *msg);
+void (*onacon)();
 
 HANDLE cli_lock;
 HANDLE lock;
@@ -177,6 +178,7 @@ DWORD WINAPI actorthread(LPVOID p){
 
 	printf("actor thread initiated...\n");
 
+    onacon();
 	for(;;){
 		// FIXME what if buffer is bigger than 8192
 		r_len=recv(*sock,buf,8192,0);
@@ -241,8 +243,10 @@ DWORD WINAPI __actor_setup(LPVOID p){
 	}
 }
 
-void actors_setup(int port,void (*cback)(char *msg)){
+void actors_setup(int port,void (*concback)(),void (*cback)(char *msg)){
     onmsg=cback;
+    onacon=concback;
+
     actor=CreateThread(NULL,0,__actor_setup,(LPVOID)&port,0,NULL);
     if(actor==NULL){
         printf("failed to create audience thread\n");

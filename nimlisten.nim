@@ -27,10 +27,14 @@ proc onmsg(msg: cstring) {.cdecl,gcsafe.} =
     except: 
         echo "exception"
 
+proc onacon() {.cdecl,gcsafe.} =
+    echo "Got new ws actor connection"
+    system.setupForeignThreadGc()
+
 
 #JsonParsingError]
     
-#actors_setup(10000,onmsg)
+actors_setup(10000,onacon, onmsg)
 
 proc onkey(key: cstring; code: cint; down: cint,propagate: ptr cint) {.cdecl.} = 
     echo "Got key: " & $key & " keycode: " & $code
