@@ -289,7 +289,7 @@ int http_setup(int port,void(*cback)(int sock,char *get)){
 
 int http_send(int sock,char *msg,int len){
     // you may or may not want to do this 
-    SOCKET sockp=sock;
+    SOCKET *sockp=sock;
     printf("trying to send %i bytes on sock %i\n",len,sock);
     printf("MSG=%s\n",msg);
     return send(sockp,msg,len,0);
