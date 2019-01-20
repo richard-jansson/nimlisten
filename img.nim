@@ -6,11 +6,11 @@ const
 
 var ppmn = 1
 
-proc compress*(pixbuf: seq[cuchar], w: int,h: int) = 
+proc compress*(pixbuf: seq[cuchar], w: int,h: int): (ptr cuchar,int) = 
     var cinfo: jpeg_compress_struct
     var jerr: jpeg_error_mgr
 
-    # where output is put
+    # when is mem freed?
     var mem: ptr cuchar
     var mem_size: culong
     var d: JDIMENSION
@@ -83,3 +83,6 @@ proc compress*(pixbuf: seq[cuchar], w: int,h: int) =
     ppmn = ppmn + 1
     var written=output.writeBuffer(mem,mem_size)
     echo "wrote " & $written & " bytes"
+    
+    return (mem,cast[int](mem_size))
+#    return cast[int](mem_size)
