@@ -149,7 +149,9 @@ int ui_grabscreen(unsigned char *out){
     bmi.bmiHeader.biClrUsed = 0;
     bmi.bmiHeader.biClrImportant = 0;
 
+#ifdef VERBOSE_UI
     printf("CreateDIB\n");
+#endif
     hbmp = CreateDIBSection(dst,&bmi,DIB_RGB_COLORS,&buffer,NULL,0);
     if(!hbmp){
         printf("Failed to create DIB section\n");
@@ -161,14 +163,18 @@ int ui_grabscreen(unsigned char *out){
         return -3;
     }
 
+#ifdef VERBOSE_UI
     printf("GetObject\n");
+#endif
     if(!GetObject(hbmp,sizeof(BITMAP),&bmp)){
         printf("GetObject failed\n");
         return -4;
     }
     // init done 
 
+#ifdef VERBOSE_UI
     printf("bitblt\n");
+#endif
     if(!BitBlt(dst,0,0,w,h,screen,0,0,SRCCOPY|CAPTUREBLT)){
         printf("BitBlt failed\n");
         return -5;
@@ -178,15 +184,21 @@ int ui_grabscreen(unsigned char *out){
 //    *buf=malloc(w*h*3);
 //    char *out=*buf;
     // assert!!
+#ifdef VERBOSE_UI
     printf("copying!\n");
+#endif
     memcpy(out,buffer,w*h*3);
 
+#ifdef VERBOSE_UI
     printf("cleaning up!\n");
+#endif
     if(screen) ReleaseDC(NULL,screen);
     if(dst) DeleteDC(dst);
     if(hbmp) DeleteObject(hbmp);
     if(screen) DeleteDC(screen);
+#ifdef VERBOSE_UI
     printf("grab is done\n");
+#endif
 
     return 0;
 }
