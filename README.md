@@ -22,6 +22,7 @@ The underlying http and ws functionallity written in C, spawns new threads there
 so that the functions below work as expected. These are necessery when a new thread has been spawned in the C functions and nim callbacks are run.  
 
 system.setupForeignThreadGc()
+
 system.tearDownForeignThreadGc()
 
 ## Architectue and further development 
@@ -30,3 +31,18 @@ Bear in mind that this is a very early version of the project. In short thought 
 ## No warranties 
 
 This is a very early version of the program and is not meant for production usage in any shape or form. 
+
+## Links 
+A playful take on an attempt to do a deep dive in possible versions of text input. These methods will send commands to nimlisten in order to control the os.   
+
+[Sigma - demonstration experimentation in the form of a game](http://sigma.eruditenow.com/)
+
+[Video - explanaiton and analysis of input methods](https://www.bitchute.com/video/FklGhgQGbuDk/)
+
+[Theory - some theory beind the input methods](http://sigma.eruditenow.com/theory.html)
+
+## Contact
+
+If you want to get in touch to discuss input methods, do not hesitate to contact me.  
+
+[Contact](http://sigma.eruditenow.com/contact.html)
