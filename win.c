@@ -31,6 +31,17 @@ LRESULT CALLBACK _keyboard_hook(int n,WPARAM w,LPARAM l){
 	return propagate?CallNextHookEx(NULL,n,w,l):1;
 }
 
+void ui_movepointer(int x,int y){
+    SetCursorPos(x,y);
+}
+
+// FIXME ignores index
+void ui_buttondown(int i,int d){
+    printf("ui_buttondown %i %i\n",i,d);
+    if( d == 1 ) mouse_event(MOUSEEVENTF_LEFTDOWN, 200, 200, 0, 0);
+    else  mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+}
+
 void ui_sendkeycodedown(int key){
 	UnhookWindowsHookEx(khook);
 	
@@ -117,19 +128,27 @@ void ui_getdim(int *width,int *height){
 int ui_grabscreen(unsigned char *out){ 
     HDC screen=NULL,dst=NULL;
 
+#ifdef VERBOSE_UI
     printf("GetDc\n");
+#endif
     screen=GetDC(NULL);
+#ifdef VERBOSE_UI
     printf("CreateCompatDC\n");
+#endif
     dst=CreateCompatibleDC(screen);
     if(!dst){
         printf("Failed to create compatible DC\n");
         return -1;
     }
    
+#ifdef VERBOSE_UI
     printf("System metrics...\n");
+#endif
     int w=GetSystemMetrics(SM_CXSCREEN);
     int h=GetSystemMetrics(SM_CYSCREEN);
+#ifdef VERBOSE_UI
     printf("%ix%i\n",w,h);
+#endif
 
     BITMAPINFO bmi;
     HBITMAP hbmp;

@@ -8,6 +8,9 @@
 
 #pragma comment (lib, "Ws2_32.lib")
 
+
+int actor_port=1;
+
 void (*onmsg)(char *msg);
 void (*onacon)();
 
@@ -186,7 +189,7 @@ DWORD WINAPI actorthread(LPVOID p){
 			printf("recv error: %i\n",GetLastError());
 			return;
 		}
-		printf("r_len=%i\n",r_len);
+//		printf("r_len=%i\n",r_len);
 		ws_recv(buf,r_len,onmsg);
 	}
 }
@@ -198,12 +201,13 @@ DWORD WINAPI __actor_setup(LPVOID p){
     SOCKET sock,cli;
     int port= *((int*)p);
 
-    sock=__listen(port);
+    printf("actor setup!\n");
+    printf("actor listening to port %i\n",port);
+    sock=__listen(actor_port);
     if(sock<0){
         printf("error: %i see net.c/__listen\n",(int)sock);
         return;
     }
-    printf("actor listening to port %i\n",port);
 
 	// is 4096 enough?
 	char buf[4096];
@@ -244,10 +248,14 @@ DWORD WINAPI __actor_setup(LPVOID p){
 }
 
 void actors_setup(int port,void (*concback)(),void (*cback)(char *msg)){
+    int lport=port;
+    actor_port=port;
     onmsg=cback;
     onacon=concback;
 
-    actor=CreateThread(NULL,0,__actor_setup,(LPVOID)&port,0,NULL);
+    printf("actors on port %i\n",port);
+
+    actor=CreateThread(NULL,0,__actor_setup,(LPVOID)&lport,0,NULL);
     if(actor==NULL){
         printf("failed to create audience thread\n");
         return 1;

@@ -60,7 +60,9 @@ void send_stream_header(SOCKET *con){
     for(int i=0;i<sizeof(headers)/sizeof(char*);i++) {
         strcat(msg,headers[i]); 
         strcat(msg,endl);
+#ifdef HTTP_VERBOSE
         printf("%s%s",headers[i],endl);
+#endif
     }
 
     send(con,msg,len,0);
@@ -86,13 +88,17 @@ char *http_parse_get(char *imsg,int len){
 
     for(;isprint(*p)&&!isspace(*p)&&p<(imsg+len);p++);
     getlen=p-getp;
-    
+   
+#ifdef HTTP_VERBOSE
     printf("[getlen]=%i\n",getlen);
+#endif
     get=malloc(getlen+1);
     memcpy(get,getp,getlen);
     get[getlen]=0;
 
+#ifdef HTTP_VERBOSE
     printf("[get]=%s\n",get);
+#endif
         
     // flip through header fields, ignored for now
 /*	for(;p<(imsg+len)||*p==0;p++){
@@ -207,9 +213,6 @@ DWORD WINAPI __http_listen(LPVOID p){
 
 	for(;;){
 		cli=accept(sock,NULL,NULL);
-#ifdef VERBOSE
-        printf("Audience: got connection\n");
-#endif
 
 		if(cli==INVALID_SOCKET){
 			printf("error accepting connection\n");
@@ -219,7 +222,7 @@ DWORD WINAPI __http_listen(LPVOID p){
 		
 		r_len=recv(cli,buf,4096,0);
 
-        printf("recvd=%i\n",r_len);
+//        printf("recvd=%i\n",r_len);
 
         /*
 		get=http_parse_get(buf,r_len);
@@ -290,7 +293,7 @@ int http_setup(int port,void(*cback)(int sock,char *get)){
 int http_send(int sock,char *msg,int len){
     // you may or may not want to do this 
     SOCKET *sockp=sock;
-    printf("trying to send %i bytes on sock %i\n",len,sock);
-    printf("MSG=%s\n",msg);
+//    printf("trying to send %i bytes on sock %i\n",len,sock);
+//    printf("MSG=%s\n",msg);
     return send(sockp,msg,len,0);
 }

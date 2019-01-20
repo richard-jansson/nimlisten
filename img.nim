@@ -30,24 +30,24 @@ proc compress*(pixbuf: seq[cuchar], w: int,h: int): (ptr cuchar,int) =
 #    cinfo.in_color_space = JCS_RGB;
 #    cinfo.in_color_space = cast[J_COLOR_SPACE](2);
 
-    echo "set_def"
+#    echo "set_def"
     jpeg_set_defaults(cinfo.addr);
-    echo "set_Q"
+#    echo "set_Q"
     jpeg_set_quality(cinfo.addr,Q,TRUE)
-    echo "set_COL"
+#    echo "set_COL"
     jpeg_set_colorspace(cinfo.addr,JCS_RGB);
 
-    echo "start_compress"
+#    echo "start_compress"
     jpeg_start_compress(cinfo.addr,TRUE)
     cinfo.input_components = 3;
     cinfo.in_color_space = JCS_RGB;
 
-    echo "write scanlines"
-    echo "W: " & $w & " H: " & $h
+#    echo "write scanlines"
+#    echo "W: " & $w & " H: " & $h
 
-    echo "alloc_row" & $w
+#    echo "alloc_row" & $w
     var row=newSeq[cuchar](w*3)
-    echo "alloc rows" 
+#    echo "alloc rows" 
     var rows=newSeq[ptr cuchar](1)
     rows[0]=cast[ptr cuchar](addr row[0])
 
@@ -74,9 +74,9 @@ proc compress*(pixbuf: seq[cuchar], w: int,h: int): (ptr cuchar,int) =
         ,cast[uint32](1)) 
 ]#
     
-    echo "finish compress"
+#    echo "finish compress"
     jpeg_finish_compress(cinfo.addr)
-    echo "destroy compress"
+#    echo "destroy compress"
     jpeg_destroy_compress(cinfo.addr)
 
 #    var output=open("ppm/" & $ppmn & ".jpg",fmWrite)

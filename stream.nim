@@ -25,15 +25,15 @@ proc oncon(sock: cint, get: cstring) {.cdecl,gcsafe.} =
 #    GC_ref(boundary)
 
     while active:
-        echo "sleep..."
+#        echo "sleep..."
         os.sleep(cast[int](1000/FPS))
         var w,h:cint
 
         ui_getdim(w.addr,h.addr)
         
-        echo "dim: " & $w & "x" & $h
+#        echo "dim: " & $w & "x" & $h
         var img=newSeq[cuchar](cast[int](w)*cast[int](h)*3)
-        echo "allocated"
+#        echo "allocated"
 
         ret=ui_grabscreen(cast[ptr cuchar](img))
 
@@ -46,27 +46,27 @@ proc oncon(sock: cint, get: cstring) {.cdecl,gcsafe.} =
             
         try: 
             let (compi,compilen)=compress(img,w,h)
-            echo "[stream] compress done. len: " & $compilen
+#            echo "[stream] compress done. len: " & $compilen
 
 #            # send boundary
-            echo "trying to send: " & $boundary.len & " bytes"
+#            echo "trying to send: " & $boundary.len & " bytes"
             http_sent=http_send(sock,cast[ptr cchar](boundary),cast[cint](boundary.len))
-            echo "Sent " & $http_sent & " bytes"
+#            echo "Sent " & $http_sent & " bytes"
             if(http_sent < 0 ):
                 active=false
 #
 #            # send header for jpeg file
             var interheader: cstring=  "Content-Type: image/jpeg\r\n" & "Content-Length: " & $compilen & "\r\n" & "\r\n"
-            echo "trying to send: " & $interheader.len & " bytes"
+#            echo "trying to send: " & $interheader.len & " bytes"
             http_sent=http_send(sock,cast[ptr cchar](interheader),cast[cint](interheader.len))
-            echo "Sent " & $http_sent & " bytes"
+#            echo "Sent " & $http_sent & " bytes"
             if(http_sent < 0 ):
                 active=false
 #
 #            # send image
-            echo "trying to send: " & $compilen & " bytes"
+#            echo "trying to send: " & $compilen & " bytes"
             http_sent=http_send(sock,cast[ptr cchar](compi),cast[cint](compilen))
-            echo "Sent " & $http_sent & " bytes"
+#            echo "Sent " & $http_sent & " bytes"
             if(http_sent < 0 ):
                 active=false
 

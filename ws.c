@@ -159,7 +159,7 @@ void __parse_http_header(char *k,char *v){
 		strcat(keyresp,KEY_SALT);
 
 		SHA1(keyresp,h);
-#ifdef VERBOSE
+#ifdef WS_VERBOSE
 		printf("sha1(%s)\n",keyresp);
 #endif
 		*hs=0;
@@ -168,11 +168,11 @@ void __parse_http_header(char *k,char *v){
 			sprintf(tmp,"%x%x", (h[i]>>4)&0xf, h[i]&0xf);
 			strcat(hs,tmp);
 		}
-#ifdef VERBOSE
+#ifdef WS_VERBOSE
 		printf("sha1=%s\n",hs);
 #endif
 		b64=b64_enc(h,20);
-#ifdef VERBOSE
+#ifdef WS_VERBOSE
 		printf("b64=%s\n",b64);
 #endif
 		keyresp=b64;
@@ -189,7 +189,7 @@ resp_t *parse_request(char *imsg, int len){
 	assert(ret);
     // FIXME test connect with nc -z and with this if block temporarily removed to iron out crash
     if(len<4){
-#ifdef VERBOSE
+#ifdef WS_VERBOSE
         printf("empty message skipping\n");
 #endif
         ret->len=0;
@@ -214,7 +214,7 @@ resp_t *parse_request(char *imsg, int len){
 		if(*v=='\r') break;
 		for(;*p!='\r';p++); *p=0; p++;
 		if(p>=(imsg+len)) break;
-#ifdef VERBOSE
+#ifdef WS_VERBOSE
 		printf("{%s} => {%s}\n",k,v);
 #endif
 //		p++;
@@ -346,7 +346,7 @@ void ws_recv(char *msg,int len,void (*cback)(char *msg)){
 
 //	demasked=malloc(len-5);
 
-#ifdef VERBOSE
+#ifdef WS_VERBOSE
 	for(int j=0;j<100;j++){
 		printf("%03i:%02x\t",j, (uint8_t)msg[j]);
 	}
