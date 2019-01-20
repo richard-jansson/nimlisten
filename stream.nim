@@ -19,7 +19,7 @@ proc oncon(sock: cint, get: cstring) {.cdecl,gcsafe.} =
     var http_sent: int
     var active = true
 
-    var boundary="MJPEGBOUNDARY"
+    var boundary="--MJPEGBOUNDARY"
 
     while active:
         echo "sleep..."
@@ -39,20 +39,28 @@ proc oncon(sock: cint, get: cstring) {.cdecl,gcsafe.} =
         if(reti != 0) : 
             echo "ui_grabscreen failed with: " & $reti
             continue
-
+    
+            
         try: 
             let (compi,compilen)=compress(img,w,h)
             echo "[stream] compress done. len: " & $compilen
-#            echo "[stream]sending " & $cast[int]($boundary.len-1) & " bytes" & " socket " & $cast[int](sock)
+
+            # send boundary
             http_sent=http_send(sock,cast[ptr cchar](boundary.addr),cast[cint](boundary.len-1))
             if(http_sent < 0 ):
                 active=false
-            echo "sent " & $http_sent & " bytes"
-            echo "[stream]sending " & $compilen & " bytes" & " socket " & $cast[int](sock)
+            
+            # send header for jpeg file
+            var interheader=  "Content-Type: image/jpeg\r\n" & "Content-Length: " & $compilen & "\r\n" & "\r\n"
+            http_sent=http_send(sock,cast[ptr cchar](interheader),cast[cint](interheader.len))
+            if(http_sent < 0 ):
+                active=false
+
+            # send image
             http_sent=http_send(sock,cast[ptr cchar](compi),cast[cint](compilen))
             if(http_sent < 0 ):
                 active=false
-            echo "sent " & $http_sent & " bytes"
+
         except IndexError:
             echo "Trouble compressing" 
             continue

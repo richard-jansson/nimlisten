@@ -79,10 +79,10 @@ proc compress*(pixbuf: seq[cuchar], w: int,h: int): (ptr cuchar,int) =
     echo "destroy compress"
     jpeg_destroy_compress(cinfo.addr)
 
-    var output=open("ppm/" & $ppmn & ".jpg",fmWrite)
-    ppmn = ppmn + 1
-    var written=output.writeBuffer(mem,mem_size)
-    echo "wrote " & $written & " bytes"
+#    var output=open("ppm/" & $ppmn & ".jpg",fmWrite)
+#    ppmn = ppmn + 1
+#    var written=output.writeBuffer(mem,mem_size)
+#    echo "wrote " & $written & " bytes"
     
     return (mem,cast[int](mem_size))
 #    return cast[int](mem_size)

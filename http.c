@@ -41,7 +41,9 @@ void http_free_get(char *get){
 void send_stream_header(SOCKET *con){
     char *endl="\r\n";
    char *headers[]=
-    { "Content-Type: multipart/x-mixed-replace;boundary=MJPEGBOUNDARY",
+    { 
+    "HTTP/1.1 200 OK",
+    "Content-Type: multipart/x-mixed-replace;boundary=MJPEGBOUNDARY",
     "Connection: close",
     "Pragma: no-cache",
     ""
@@ -289,5 +291,6 @@ int http_send(int sock,char *msg,int len){
     // you may or may not want to do this 
     SOCKET sockp=sock;
     printf("trying to send %i bytes on sock %i\n",len,sock);
+    printf("MSG=%s\n",msg);
     return send(sockp,msg,len,0);
 }
