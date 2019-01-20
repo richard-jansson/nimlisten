@@ -6,7 +6,8 @@ var sport: int
 
 type cmdt = object
     cmd: string
-    code: int 
+    a: int 
+    b: int
 
 # Do we need a thread safe option for this one?
 proc onmsg(msg: cstring) {.cdecl,gcsafe.} = 
@@ -15,15 +16,17 @@ proc onmsg(msg: cstring) {.cdecl,gcsafe.} =
     try:     
         let jo = parseJson($msg)
         let cmd = to(jo,cmdt)
-        echo "cmd: " & cmd.cmd
-        echo "code: " & $cmd.code
 
         if cmd.cmd == "keycode":
-            ui_sendkeycode(cast[cint](cmd.code))
+            ui_sendkeycode(cast[cint](cmd.a))
         elif cmd.cmd == "kcdwn": 
-            ui_sendkeycodedown(cast[cint](cmd.code))
+            ui_sendkeycodedown(cast[cint](cmd.a))
         elif cmd.cmd == "kcdup": 
-            ui_sendkeycodeup(cast[cint](cmd.code))
+            ui_sendkeycodeup(cast[cint](cmd.a))
+        if cmd.cmd == "ptrmv":
+            ui_movepointer(cast[cint](cmd.a),cast[cint](cmd.b))
+        if cmd.cmd == "ptrbtn":
+            ui_buttondown(cast[cint](cmd.a),cast[cint](cmd.b))
     except: 
         echo "exception"
 
@@ -33,8 +36,10 @@ proc onacon() {.cdecl,gcsafe.} =
 
 
 #JsonParsingError]
-    
-actors_setup(10000,onacon, onmsg)
+
+var aport: cint = 10000
+
+actors_setup(aport,onacon, onmsg)
 
 proc onkey(key: cstring; code: cint; down: cint,propagate: ptr cint) {.cdecl.} = 
     echo "Got key: " & $key & " keycode: " & $code

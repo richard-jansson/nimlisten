@@ -5,3 +5,5 @@ void ui_sendkeycodedown(int key);
 void ui_sendkeycodeup(int key);
 void ui_getdim(int *w,int *h);
 int ui_grabscreen(unsigned char *buf);
+void ui_movepointer(int x,int y);
+void ui_buttondown(int i,int d);
