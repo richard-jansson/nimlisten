@@ -56,17 +56,19 @@ proc oncon(sock: cint, get: cstring) {.cdecl,gcsafe.} =
                 active=false
 #
 #            # send header for jpeg file
-#            var interheader=  "Content-Type: image/jpeg\r\n" & "Content-Length: " & $compilen & "\r\n" & "\r\n"
-#            http_sent=http_send(sock,cast[ptr cchar](interheader),cast[cint](interheader.len))
-#            echo "Sent "&$http_sent&" bytes"
-#            if(http_sent < 0 ):
-#                active=false
+            var interheader: cstring=  "Content-Type: image/jpeg\r\n" & "Content-Length: " & $compilen & "\r\n" & "\r\n"
+            echo "trying to send: " & $interheader.len & " bytes"
+            http_sent=http_send(sock,cast[ptr cchar](interheader),cast[cint](interheader.len))
+            echo "Sent " & $http_sent & " bytes"
+            if(http_sent < 0 ):
+                active=false
 #
 #            # send image
-#            http_sent=http_send(sock,cast[ptr cchar](compi),cast[cint](compilen))
-#            echo "Sent "&$http_sent&" bytes"
-#            if(http_sent < 0 ):
-#                active=false
+            echo "trying to send: " & $compilen & " bytes"
+            http_sent=http_send(sock,cast[ptr cchar](compi),cast[cint](compilen))
+            echo "Sent " & $http_sent & " bytes"
+            if(http_sent < 0 ):
+                active=false
 
         except IndexError:
             echo "Trouble compressing" 
