@@ -14,11 +14,11 @@
 // data sent to listen thread as argument
 typedef struct __http_listen_data_t {
     int port;
-    void (*cback)(char *get);
+    void (*cback)(int socket,char *get);
 } http_listen_data_t;
 
 typedef struct __http_con_data_t {
-    void (*cback)(char *get);
+    void (*cback)(int socket,char *get);
     char *get;
     SOCKET *con;
 } http_con_data_t;
@@ -162,12 +162,13 @@ SOCKET __listen2(int port){
 DWORD WINAPI __http_con_thread(LPVOID p){
   http_con_data_t *con=(http_con_data_t*)p;
   SOCKET *cli=con->con;
-  void (*cback)(char *)=con->cback;
+  void (*cback)(int,char *)=con->cback;
   char *get=con->get;
     
     printf("GET: %s\n",get);
+    printf("cli is: %i\n",(int)con->con);
     send_stream_header(cli);
-    cback(get);
+    cback(con->con,get);
     http_free_get(get);
     closesocket(cli);
 }
@@ -264,7 +265,7 @@ void test_cback(char *s){
     printf("C callback: %s\n",s);
 }
 
-int http_setup(int port,void(*cback)(char *get)){
+int http_setup(int port,void(*cback)(int sock,char *get)){
 //?    cback("test.."); 
 //    return 123;
 //    http_listen_data_t cfg={port,cback};
@@ -282,4 +283,11 @@ int http_setup(int port,void(*cback)(char *get)){
         return 1;
     }
     return 0;
+}
+
+int http_send(int sock,char *msg,int len){
+    // you may or may not want to do this 
+    SOCKET sockp=sock;
+    printf("trying to send %i bytes on sock %i\n",len,sock);
+    return send(sockp,msg,len,0);
 }
